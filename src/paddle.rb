@@ -1,15 +1,16 @@
 require 'gosu'
 require_relative 'vector_2d'
+require_relative 'mixins/drawable'
 
+# Player class
+#
 class Paddle
-  def initialize(x_pos = 0.0, y_pos = 0.0)
-    @image = Gosu::Image.new('assets/images/paddle.png')
-    @position = Vector2D[x_pos, y_pos]
-    @speed = 1
-  end
+  include Drawable
 
-  def draw
-    @image.draw(@position.x, @position.y)
+  def initialize(position: Vector2D[])
+    @image = Gosu::Image.new('assets/images/paddle.png')
+    @position = position
+    @speed = 10
   end
 
   def move_left
