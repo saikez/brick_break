@@ -24,28 +24,6 @@ class Vector2D < Vector
     @elements[1] = value
   end
 
-  def +(other)
-    raise TypeError, 'Expected Vector2D' unless other.is_a?(Vector2D)
-
-    Vector2D[x + other.x, y + other.y]
-  end
-
-  def -(other)
-    raise TypeError, 'Expected Vector2D' unless other.is_a?(Vector2D)
-
-    Vector2D[x - other.x, y - other.y]
-  end
-
-  def *(scalar)
-    Vector2D[x * scalar, y * scalar]
-  end
-
-  def /(scalar)
-    raise ZeroDivisionError, 'Division by zero' if scalar.zero?
-
-    Vector2D[x / scalar, y / scalar]
-  end
-
   def clamp_x(min, max)
     self.x = min if x < min
     self.x = max if x > max

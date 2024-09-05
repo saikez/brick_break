@@ -10,6 +10,9 @@ class BrickBreak < Gosu::Window
   def initialize
     super 800, 600
     self.caption = 'BrickBreak'
+    @mouse_movement = false
+    @previous_mouse_position = Vector2D[]
+    @ball_launched = false
 
     prepare_player
     prepare_bricks
@@ -18,7 +21,7 @@ class BrickBreak < Gosu::Window
 
   def prepare_player
     @player = Paddle.new position: Vector2D[width / 2, height - 40]
-    half_paddle_width = @player.image.width / 2
+    half_paddle_width = @player.width / 2
     @player_bounds = [
       Vector2D[half_paddle_width, 0],
       Vector2D[width - half_paddle_width, height]
@@ -33,8 +36,8 @@ class BrickBreak < Gosu::Window
     columns = (width / brick_dimensions[:width]).floor
     offset = (width % brick_dimensions[:width]) / 2
 
-    rows.times do |row|
-      columns.times do |column|
+    (1..rows).each do |row|
+      (1..columns).each do |column|
         x_position = (offset + brick_dimensions[:width] * column) - (brick_dimensions[:width] / 2)
         y_position = 40 + (brick_dimensions[:height] * row)
         brick_position = Vector2D[x_position, y_position]
@@ -45,18 +48,49 @@ class BrickBreak < Gosu::Window
   end
 
   def prepare_ball
-    Ball.new
+    @ball = Ball.new
   end
 
   def update
-    @player.move_left if Gosu.button_down?(Gosu::KB_LEFT) || Gosu::button_down?(Gosu::GP_LEFT)
-    @player.move_right if Gosu.button_down?(Gosu::KB_RIGHT) || Gosu::button_down?(Gosu::GP_RIGHT)
+    player_movement
+    readied_ball_position
+  end
+
+  def player_movement
+    mouse_position = Vector2D[mouse_x, mouse_y]
+    if !@mouse_movement && @previous_mouse_position != mouse_position && point_within_window?(mouse_position)
+      @mouse_movement = true
+      @previous_mouse_position = mouse_position
+    end
+
+    player_keyboard_movement
+    @player.move_to_position(position: mouse_position) if @mouse_movement
+
     @player.position.clamp(*@player_bounds)
+  end
+
+  def player_keyboard_movement
+    if Gosu::button_down?(Gosu::KB_LEFT) || Gosu::button_down?(Gosu::GP_LEFT)
+      @player.move_left
+      @mouse_movement = false
+    end
+    if Gosu::button_down?(Gosu::KB_RIGHT) || Gosu::button_down?(Gosu::GP_RIGHT)
+      @player.move_right
+      @mouse_movement = false
+    end
+  end
+
+  def readied_ball_position
+    return if @ball_launched
+
+    offset = (@ball.height / 2) + (@player.height / 2)
+    @ball.position = @player.position - Vector2D[0, offset]
   end
 
   def draw
     @player.draw
     @bricks.each(&:draw)
+    @ball.draw
   end
 
   def button_down(id)
@@ -65,5 +99,9 @@ class BrickBreak < Gosu::Window
     else
       super
     end
+  end
+
+  def point_within_window?(point)
+    point.x.between?(0, width) && point.y.between?(0, height)
   end
 end
