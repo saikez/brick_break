@@ -2,6 +2,7 @@
 
 require 'gosu'
 require_relative 'paddle'
+require_relative 'brick_wall'
 require_relative 'brick'
 require_relative 'ball'
 require_relative 'vector_2d'
@@ -30,22 +31,8 @@ class BrickBreak < Gosu::Window
   end
 
   def prepare_bricks
-    @bricks = []
-    brick_images = Dir.entries('assets/images/bricks').reject { |e| e.start_with? '.' }
-    brick_dimensions = Brick.dimensions
-    rows = brick_images.size
-    columns = (width / brick_dimensions[:width]).floor
-    offset = (width % brick_dimensions[:width]) / 2
-
-    (1..rows).each do |row|
-      (1..columns).each do |column|
-        x_position = (offset + brick_dimensions[:width] * column) - (brick_dimensions[:width] / 2)
-        y_position = 40 + (brick_dimensions[:height] * row)
-        brick_position = Vector2D[x_position, y_position]
-
-        @bricks.push Brick.new(position: brick_position, brick_image: brick_images[row - 1])
-      end
-    end
+    @brick_wall = BrickWall.new(width)
+    @brick_wall.build_wall
   end
 
   def prepare_ball
@@ -80,6 +67,9 @@ class BrickBreak < Gosu::Window
       @player.move_right
       @mouse_movement = false
     end
+
+    # Prevent Rubocop autocorrecting above if statement to guard clause
+    true
   end
 
   def readied_ball_position
@@ -96,11 +86,8 @@ class BrickBreak < Gosu::Window
   end
 
   def collisions
-    @bricks.each do |brick|
-      if @ball.collides_with?(brick)
-        brick.on_collision(@ball)
-        @bricks.delete(brick)
-      end
+    @brick_wall.bricks.each do |brick|
+      brick.on_collision(@ball) if @ball.collides_with?(brick)
     end
 
     @ball.collides_with?(@player)
@@ -113,7 +100,7 @@ class BrickBreak < Gosu::Window
 
   def draw
     @player.draw
-    @bricks.each(&:draw)
+    @brick_wall.draw
     @ball.draw
   end
 
