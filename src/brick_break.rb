@@ -27,10 +27,7 @@ class BrickBreak < Gosu::Window
 
   def prepare_player
     @player = Paddle.new position: Vector2D[width / 2, height - 40]
-    @player_bounds = [
-      Vector2D[@player.half_width, 0],
-      Vector2D[width - @player.half_width, height]
-    ]
+    @player_bounds = [Vector2D[@player.half_width, 0], Vector2D[width - @player.half_width, height]]
   end
 
   def prepare_bricks
@@ -56,7 +53,7 @@ class BrickBreak < Gosu::Window
     end
 
     player_keyboard_movement
-    @player.move_to_position(position: mouse_position) if @mouse_movement
+    @player.move_to_position(mouse_position) if @mouse_movement
 
     @player.position.clamp(*@player_bounds)
   end

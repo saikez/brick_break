@@ -29,16 +29,16 @@ class Paddle
     super
   end
 
-  def move_to_position(position: Vector2D[])
+  def move_to_position(position)
     distance = position - @position
-    distance.x.positive? ? move_right(distance: distance.x) : move_left(distance: distance.x.abs)
+    distance.x.positive? ? move_right(distance.x) : move_left(distance.x.abs)
   end
 
-  def move_left(distance: @speed)
+  def move_left(distance = @speed)
     @position.x -= [distance, @speed].min
   end
 
-  def move_right(distance: @speed)
+  def move_right(distance = @speed)
     @position.x += [distance, @speed].min
   end
 

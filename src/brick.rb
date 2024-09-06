@@ -27,7 +27,9 @@ class Brick
     { width: sample_brick.width, height: sample_brick.height }
   end
 
-  def on_collision(_other)
+  def on_collision(other)
+    return unless other.instance_of?(Ball)
+
     GameState.instance.score += @value
     notify_listeners(:break_brick, self)
   end
