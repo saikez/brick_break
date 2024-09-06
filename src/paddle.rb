@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gosu'
 require_relative 'vector_2d'
 require_relative 'mixins/drawable'

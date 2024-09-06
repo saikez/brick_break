@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'gosu'
 require_relative 'paddle'
 require_relative 'brick'
@@ -29,7 +31,7 @@ class BrickBreak < Gosu::Window
 
   def prepare_bricks
     @bricks = []
-    brick_images = Dir.entries('assets/images/bricks').reject{ |e| e.start_with? '.' }
+    brick_images = Dir.entries('assets/images/bricks').reject { |e| e.start_with? '.' }
     brick_dimensions = Brick.dimensions
     rows = brick_images.size
     columns = (width / brick_dimensions[:width]).floor
@@ -70,11 +72,11 @@ class BrickBreak < Gosu::Window
   end
 
   def player_keyboard_movement
-    if Gosu::button_down?(Gosu::KB_LEFT) || Gosu::button_down?(Gosu::GP_LEFT)
+    if Gosu.button_down?(Gosu::KB_LEFT) || Gosu.button_down?(Gosu::GP_LEFT)
       @player.move_left
       @mouse_movement = false
     end
-    if Gosu::button_down?(Gosu::KB_RIGHT) || Gosu::button_down?(Gosu::GP_RIGHT)
+    if Gosu.button_down?(Gosu::KB_RIGHT) || Gosu.button_down?(Gosu::GP_RIGHT)
       @player.move_right
       @mouse_movement = false
     end

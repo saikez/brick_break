@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Collidable
   include Drawable
   attr_accessor :collidable, :collision_normal

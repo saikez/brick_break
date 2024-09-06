@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Drawable
   attr_accessor :position, :image
 
