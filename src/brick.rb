@@ -4,12 +4,14 @@ require 'gosu'
 require_relative 'vector_2d'
 require_relative 'mixins/drawable'
 require_relative 'mixins/collidable'
+require_relative 'mixins/listenable'
 
 # A literal brick
 #
 class Brick
   include Drawable
   include Collidable
+  include Listenable
 
   def initialize(position: Vector2D[], brick_image: nil)
     brick_image = brick_blue.png if brick_image.nil?
