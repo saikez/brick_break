@@ -12,12 +12,13 @@ class Brick
   include Collidable
   include Listenable
 
-  def initialize(position: Vector2D[], brick_image: nil)
+  def initialize(position: Vector2D[], brick_image: nil, value: 0)
     brick_image = 'brick_blue.png' if brick_image.nil?
     brick_image_path = "assets/images/bricks/#{brick_image}"
     @image = Gosu::Image.new(brick_image_path || 'assets/images/bricks/brick_blue.png')
     @position = position
     @collidable = true
+    @value = value
   end
 
   def self.dimensions
@@ -27,6 +28,7 @@ class Brick
   end
 
   def on_collision(_other)
+    GameState.instance.score += @value
     notify_listeners(:break_brick, self)
   end
 end

@@ -5,6 +5,8 @@ require_relative 'paddle'
 require_relative 'brick_wall'
 require_relative 'brick'
 require_relative 'ball'
+require_relative 'game_state'
+require_relative 'ui'
 require_relative 'vector_2d'
 
 # It's game time!
@@ -15,7 +17,8 @@ class BrickBreak < Gosu::Window
     self.caption = 'BrickBreak'
     @mouse_movement = false
     @previous_mouse_position = Vector2D[]
-    @ball_launched = false
+    @game_state = GameState.instance
+    @ui = UI.new(width, height)
 
     prepare_player
     prepare_bricks
@@ -73,7 +76,7 @@ class BrickBreak < Gosu::Window
   end
 
   def readied_ball_position
-    return if @ball_launched
+    return if @game_state.ball_launched
 
     offset = (@ball.height / 2) + (@player.height / 2)
     @ball.position = @player.position - Vector2D[0, offset]
@@ -90,7 +93,7 @@ class BrickBreak < Gosu::Window
       brick.on_collision(@ball) if @ball.collides_with?(brick)
     end
 
-    @ball.collides_with?(@player)
+    @player.on_collision(@ball) if @ball.collides_with?(@player)
 
     @ball.collision_normal = Vector2D.right if @ball.position.x <= @ball.half_width
     @ball.collision_normal = Vector2D.left if @ball.position.x >= width - @ball.half_width
@@ -102,13 +105,14 @@ class BrickBreak < Gosu::Window
     @player.draw
     @brick_wall.draw
     @ball.draw
+    @ui.draw
   end
 
   def button_down(id)
     if id == Gosu::KB_ESCAPE
       close
-    elsif !@ball_launched && id == Gosu::KB_SPACE
-      @ball_launched = true
+    elsif !@game_state.ball_launched && id == Gosu::KB_SPACE
+      @game_state.ball_launched = true
       @ball.launch
     else
       super

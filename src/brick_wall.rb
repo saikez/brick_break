@@ -24,8 +24,9 @@ class BrickWall
         x_position = (@x_offset + @brick_dimensions[:width] * column) - (@brick_dimensions[:width] / 2)
         y_position = @y_offset + (@brick_dimensions[:height] * row)
         brick_position = Vector2D[x_position, y_position]
+        value = (@rows - (row - 1)) * 100
 
-        brick = Brick.new(position: brick_position, brick_image: @brick_images[row - 1])
+        brick = Brick.new(position: brick_position, brick_image: @brick_images[row - 1], value:)
         brick.add_listener(self)
         @bricks.push brick
       end
