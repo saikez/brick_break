@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Make things hit other things!
+#
 module Collidable
   include Drawable
   attr_accessor :collidable, :collision_normal

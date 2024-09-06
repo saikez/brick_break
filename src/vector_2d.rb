@@ -2,6 +2,8 @@
 
 require 'matrix'
 
+# Vectors are cool, let's make them cooler!
+#
 class Vector2D < Vector
   def self.[](*args)
     return Vector2D.zero(2) if args.empty?
