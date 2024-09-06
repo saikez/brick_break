@@ -1,17 +1,20 @@
 require 'gosu'
 require_relative 'vector_2d'
 require_relative 'mixins/drawable'
+require_relative 'mixins/collidable'
 
 # Player class
 #
 class Paddle
   include Drawable
+  include Collidable
 
   def initialize(position: Vector2D[])
     @image = Gosu::Image.new('assets/images/paddle.png')
     @previous_position = position
     @position = position
     @speed = 10
+    @collidable = true
   end
 
   def update

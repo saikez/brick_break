@@ -40,4 +40,43 @@ class Vector2D < Vector
     clamp_x(min_vector.x, max_vector.x)
     clamp_y(min_vector.y, max_vector.y)
   end
+
+  def distance_to(other)
+    Math.sqrt(sqr_distance_to(other))
+  end
+
+  def sqr_distance_to(other)
+    (other.x - x)**2 + (other.y - y)**2
+  end
+
+  def reflect(normal)
+    n = normal.normalize
+
+    self - (2 * dot(n) * n)
+  end
+
+  def reflect!(normal)
+    reflected_self = reflect(normal)
+
+    self.x = reflected_self.x
+    self.y = reflected_self.y
+
+    self
+  end
+
+  def self.left
+    Vector2D[-1.0, 0.0]
+  end
+
+  def self.right
+    Vector2D[1.0, 0.0]
+  end
+
+  def self.up
+    Vector2D[0.0, -1.0]
+  end
+
+  def self.down
+    Vector2D[0.0, 1.0]
+  end
 end

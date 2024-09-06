@@ -21,10 +21,9 @@ class BrickBreak < Gosu::Window
 
   def prepare_player
     @player = Paddle.new position: Vector2D[width / 2, height - 40]
-    half_paddle_width = @player.width / 2
     @player_bounds = [
-      Vector2D[half_paddle_width, 0],
-      Vector2D[width - half_paddle_width, height]
+      Vector2D[@player.half_width, 0],
+      Vector2D[width - @player.half_width, height]
     ]
   end
 
@@ -53,7 +52,8 @@ class BrickBreak < Gosu::Window
 
   def update
     player_movement
-    readied_ball_position
+    ball_movement
+    collisions
   end
 
   def player_movement
@@ -87,6 +87,28 @@ class BrickBreak < Gosu::Window
     @ball.position = @player.position - Vector2D[0, offset]
   end
 
+  def ball_movement
+    readied_ball_position
+
+    @ball.update
+  end
+
+  def collisions
+    @bricks.each do |brick|
+      if @ball.collides_with?(brick)
+        brick.on_collision(@ball)
+        @bricks.delete(brick)
+      end
+    end
+
+    @ball.collides_with?(@player)
+
+    @ball.collision_normal = Vector2D.right if @ball.position.x <= @ball.half_width
+    @ball.collision_normal = Vector2D.left if @ball.position.x >= width - @ball.half_width
+    @ball.collision_normal = Vector2D.down if @ball.position.y <= @ball.half_height
+    @ball.collision_normal = Vector2D.up if @ball.position.y >= height - @ball.half_height
+  end
+
   def draw
     @player.draw
     @bricks.each(&:draw)
@@ -96,6 +118,9 @@ class BrickBreak < Gosu::Window
   def button_down(id)
     if id == Gosu::KB_ESCAPE
       close
+    elsif !@ball_launched && id == Gosu::KB_SPACE
+      @ball_launched = true
+      @ball.launch
     else
       super
     end
