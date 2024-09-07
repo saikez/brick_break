@@ -95,22 +95,26 @@ class BrickBreak < Gosu::Window
     @ball.collision_normal = Vector2D.right if @ball.position.x <= @ball.half_width
     @ball.collision_normal = Vector2D.left if @ball.position.x >= width - @ball.half_width
     @ball.collision_normal = Vector2D.down if @ball.position.y <= @ball.half_height
-    @ball.collision_normal = Vector2D.up if @ball.position.y >= height - @ball.half_height
+    @game_state.lose_life if @ball.position.y >= height - @ball.half_height
   end
 
   def draw
-    @player.draw
-    @brick_wall.draw
-    @ball.draw
+    unless @game_state.game_over
+      @player.draw
+      @brick_wall.draw
+      @ball.draw
+    end
     @ui.draw
   end
 
   def button_down(id)
     if id == Gosu::KB_ESCAPE
       close
-    elsif !@game_state.ball_launched && id == Gosu::KB_SPACE
+    elsif !@game_state.ball_launched && !@game_state.game_over && id == Gosu::KB_SPACE
       @game_state.ball_launched = true
       @ball.launch
+    elsif @game_state.game_over && id == Gosu::KB_SPACE
+      @game_state.full_reset
     else
       super
     end

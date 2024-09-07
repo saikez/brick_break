@@ -6,7 +6,7 @@ require 'singleton'
 #
 class GameState
   include Singleton
-  attr_accessor :score, :lives_total, :lives_remaining, :ball_launched
+  attr_accessor :score, :lives_total, :lives_remaining, :ball_launched, :game_over
 
   def initialize
     full_reset
@@ -18,9 +18,12 @@ class GameState
     @lives_total = max_lives
     @lives_remaining = max_lives
     @ball_launched = false
+    @game_over = false
   end
 
-  def reset_ball
+  def lose_life
+    @lives_remaining -= 1
     @ball_launched = false
+    @game_over = true if @lives_remaining <= 0
   end
 end
