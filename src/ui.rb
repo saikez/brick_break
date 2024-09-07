@@ -10,7 +10,7 @@ class UI
   def initialize(window_width, _window_height)
     @empty_heart = Gosu::Image.new('assets/images/heart_empty.png')
     @full_heart = Gosu::Image.new('assets/images/heart_full.png')
-    @score_font = Gosu::Font.new(40, { name: 'assets/fonts/venite-adoremus-font/VeniteAdoremus-rgRBA.ttf' })
+    @score_font = Gosu::Font.new(40, name: 'assets/fonts/venite-adoremus-font/VeniteAdoremus-rgRBA.ttf')
     @window_width = window_width
   end
 
